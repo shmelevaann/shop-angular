@@ -1,10 +1,20 @@
 angular.module('market', []).controller('productController', function ($scope, $http) {
     const contextPath = 'http://localhost:8189/market';
 
+
     $scope.findAllProducts = function() {
-        $http.get(contextPath + '/products')
+         $http({
+                    url: contextPath + '/products',
+                    method: 'GET',
+                    params: {
+                        page: $scope.page ? $scope.page : 0,
+                        size: $scope.size ? $scope.size : 3
+                    }
+                })
             .then(function (response) {
-                $scope.ProductsList = response.data;
+                $scope.ProductsList = response.data.products;
+                $scope.page = response.data.currentPage;
+                $scope.totalPages = response.data.totalPages;
             })
     }
 
@@ -18,5 +28,15 @@ angular.module('market', []).controller('productController', function ($scope, $
             .then(function () {
                 $scope.findAllProducts();
             })
+    }
+
+    $scope.previousPage = function() {
+        $scope.page--;
+        $scope.findAllProducts();
+    }
+
+    $scope.nextPage = function() {
+        $scope.page++;
+        $scope.findAllProducts();
     }
 });

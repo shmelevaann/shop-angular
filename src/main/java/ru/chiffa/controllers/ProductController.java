@@ -1,8 +1,11 @@
 package ru.chiffa.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.chiffa.model.Product;
+import ru.chiffa.model.ProductPage;
 import ru.chiffa.services.ProductService;
 
 import java.util.List;
@@ -14,8 +17,8 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public List<Product> findAll() {
-        return productService.findAll();
+    public ProductPage findAll(@RequestParam Integer page, @RequestParam Integer size) {
+        return productService.findAll(page, size);
     }
 
     @DeleteMapping("/{id}")

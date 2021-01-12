@@ -32,6 +32,16 @@
                 <button class="btn btn-danger" ng-click="deleteProductById(p.id)">Delete</button>
             </td>
         </tr>
+        <tr>
+            <td colspan="3">
+                <div class="row">
+                    <button class="btn btn-default" ng-click="previousPage()" ng-disabled="page==0">&lt;</button>
+                    <span>{{page + 1}}</span>
+                    <button class="btn btn-default" ng-click="nextPage()" ng-disabled="page==totalPages-1">&gt;</button>
+                    <input class="" type="number" ng-model="size" id="size">
+                </div>
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>
