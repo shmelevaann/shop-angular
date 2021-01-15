@@ -39,4 +39,16 @@ angular.module('market', []).controller('productController', function ($scope, $
         $scope.page++;
         $scope.findAllProducts();
     }
+
+    $scope.addNewProduct = function() {
+        $http({
+            url: contextPath + "/products/",
+            method: "POST",
+            data: $scope.newProduct
+        })
+        .then(function(){
+            $scope.newProduct = null;
+            $scope.findAllProducts();
+        });
+    }
 });
