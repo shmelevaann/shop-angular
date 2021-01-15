@@ -1,0 +1,49 @@
+<!doctype html>
+
+<html ng-app="market">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
+    <script src="products.js"></script>
+</head>
+
+<body>
+
+<div class="container" ng-controller="productController">
+    <h3>All Products</h3>
+    <table class="table table-hover" cellpadding="0" cellspacing="0">
+        <thead>
+        <tr>
+            <td>Name</td>
+            <td>Price</td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="p in ProductsList">
+            <td>{{p.title}}</td>
+            <td>{{p.price}}</td>
+            <td>
+                <button class="btn btn-danger" ng-click="deleteProductById(p.id)">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <div class="row">
+                    <button class="btn btn-default" ng-click="previousPage()" ng-disabled="page==0">&lt;</button>
+                    <span>{{page + 1}}</span>
+                    <button class="btn btn-default" ng-click="nextPage()" ng-disabled="page==totalPages-1">&gt;</button>
+                    <input class="" type="number" ng-model="size" id="size">
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
