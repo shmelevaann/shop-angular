@@ -1,6 +1,6 @@
 angular.module('market', []).controller('productController', function ($scope, $http) {
     const contextPath = 'http://localhost:8189/market';
-
+    $scope.login = false;
 
     $scope.findAllProducts = function() {
          $http({
@@ -18,7 +18,68 @@ angular.module('market', []).controller('productController', function ($scope, $
             })
     }
 
-    $scope.findAllProducts();
+    $scope.getUserId = function() {
+        $http({
+            url: contextPath + "/user/login",
+            method: "GET",
+            params: {name: $scope.user.name}
+        }).then(function(response) {
+            $scope.user.id = response.data.id;
+            $scope.login = true;
+            $scope.findCart();
+        })
+    }
+
+    $scope.findCart = function() {
+        if ($scope.login){
+            $http({
+                url: contextPath + '/cart',
+                method: 'GET',
+                params: {id: $scope.user.id}
+            })
+            .then(function(response) {
+                $scope.cart = response.data
+            })
+        }
+    }
+
+    $scope.addToCart = function(productId) {
+        if($scope.login){
+            $scope.cartItem = {};
+            $scope.cartItem.product = {};
+            $scope.cartItem.userId = $scope.user.id;
+            $scope.cartItem.product.id = productId;
+            $scope.cartItem.quantity = 1;
+            $http({
+                url: contextPath + "/cart",
+                method: "POST",
+                data: $scope.cartItem
+            }). then (function() {
+                $scope.cartItem = null;
+                $scope.findCart();
+            })
+        }
+    }
+
+    $scope.deleteCartItemById = function(userId, productId) {
+        $http({
+            url: contextPath + "/cart",
+            method: "DELETE",
+            params: {userId: userId, productId: productId}
+        }).then(function(){
+            $scope.findCart();
+        })
+    }
+
+    $scope.clearCart = function() {
+        $http({
+            url:contextPath + "/cart/all",
+            method: "DELETE",
+            params: {userId: $scope.user.id}
+        }).then(function(){
+            $scope.findCart();
+        })
+    }
 
     $scope.deleteProductById = function(id) {
         $http({
@@ -51,4 +112,7 @@ angular.module('market', []).controller('productController', function ($scope, $
             $scope.findAllProducts();
         });
     }
+
+    $scope.findAllProducts();
+    $scope.findCart();
 });

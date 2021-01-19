@@ -15,3 +15,18 @@ insert into products (title, price) values
     ('Cherry', 20),
     ('Strawberry', 15),
     ('Raspberry', 20);
+
+create table users (
+    id bigserial primary key,
+    name varchar(255));
+
+insert into users (name) values
+    ('User1'),
+    ('User2'),
+    ('User3');
+
+create table cart_items (
+    user_id bigserial,
+    product_id bigserial,
+    quantity int,
+    primary key (user_id, product_id));
