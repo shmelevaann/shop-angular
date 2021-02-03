@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.chiffa.DTO.CartItemDto;
-import ru.chiffa.DTO.CartItemDtoMapper;
+import ru.chiffa.model.Product;
+import ru.chiffa.reposirories.UserRepository;
+import ru.chiffa.utils.CartItemDtoMapper;
 import ru.chiffa.model.CartItem;
 import ru.chiffa.model.CartItemIdentity;
 import ru.chiffa.reposirories.CartRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,29 +20,41 @@ import java.util.stream.Collectors;
 public class CartService {
     private final CartRepository cartRepository;
     private final CartItemDtoMapper cartItemDtoMapper;
+    private final UserRepository userRepository;
 
-    public List<CartItemDto> findByUserId(Long id) {
-        return cartRepository.findAllByUserId(id).stream().map(cartItemDtoMapper::cartItemToCartItemDto).collect(Collectors.toList());
+    public List<CartItemDto> findByUsername(String username) {
+        return cartRepository.findAllByUserUsername(username).stream().map(cartItemDtoMapper::cartItemToCartItemDto).collect(Collectors.toList());
     }
 
-    public void saveOrUpdate(CartItemDto cartItemDto) {
-        CartItem cartItem = cartItemDtoMapper.cartItemDtoToCartItem(cartItemDto);
-        cartRepository.findById(cartItem.getId())
-                .ifPresent(existingItem -> cartItem.setQuantity(cartItem.getQuantity() + existingItem.getQuantity()));
-        cartRepository.save(cartItem);
+    public void saveOrUpdate(String username, Long product, Integer quantity) {
+        CartItem cartItem;
+        Optional<CartItem> existingItem = cartRepository.findByUserUsernameAndProductId(username, product);
+        if(existingItem.isPresent()) {
+            cartItem = existingItem.get();
+            cartItem.setQuantity(cartItem.getQuantity() + quantity);
+        } else {
+            cartItem = new CartItem();
+            cartItem.setUser(userRepository.findByUsername(username).get());
+            cartItem.setProduct(new Product());
+            cartItem.getProduct().setId(product);
+            cartItem.setQuantity(quantity);
+        }
+
+        if(cartItem.getQuantity() <= 0) {
+            cartRepository.deleteById(new CartItemIdentity(cartItem.getUser().getId(), cartItem.getProduct().getId()));
+        } else {
+            cartRepository.save(cartItem);
+        }
     }
 
-    public void deleteCartItem(CartItemIdentity cartItemId) {
-        cartRepository.deleteById(cartItemId);
-    }
-
-
-    //Вы могли бы объяснить почему без такой аннотации выпадает нижеследующее?
-    //"No EntityManager with actual transaction available for current thread - cannot reliably process 'remove' call"
-    //stackOverflow проблему решил, но почему так я не поняла..
-    //https://stackoverflow.com/questions/32269192/spring-no-entitymanager-with-actual-transaction-available-for-current-thread
     @Transactional
-    public void clearCart(Long userId) {
-        cartRepository.deleteByUserId(userId);
+    public void deleteCartItem(String username, Long product) {
+        cartRepository.deleteByUserUsernameAndProductId(username, product);
+    }
+
+
+    @Transactional
+    public void clearCart(String username) {
+        cartRepository.deleteByUserUsername(username);
     }
 }

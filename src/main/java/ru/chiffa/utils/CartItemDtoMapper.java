@@ -1,7 +1,8 @@
-package ru.chiffa.DTO;
+package ru.chiffa.utils;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.chiffa.DTO.CartItemDto;
 import ru.chiffa.model.CartItem;
 import ru.chiffa.model.User;
 

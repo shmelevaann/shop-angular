@@ -14,15 +14,21 @@
 
 <body>
 <div class="container" ng-controller="productController">
-    <form novalidate ng-submit="getUserId()">
+    <form novalidate ng-submit="tryToLogIn()" ng-show="!loggedIn">
         <div class="form-group col-md-6">
             <label for="username">Username</label>
             <input class="form-control" type="text" ng-model="user.name" id="username">
         </div>
         <div class="form-group col-md-6">
-            <button class="btn btn-success" type="submit">Login</button>
+            <label for="username">Password:</label>
+            <input class="form-control" type="text" ng-model="user.password" id="password">
+        </div>
+        <div class="form-group col-md-6">
+            <button class="btn btn-success" type="submit">Sign in</button>
         </div>
     </form>
+
+    <div ng-show="loggedIn">Don't press F5, {{user.name}}. </div>
 
     <h3>All Products</h3>
     <table class="table table-hover" cellpadding="0" cellspacing="0">
@@ -81,7 +87,7 @@
             </table>
             <td>{{item.product.price}}</td>
             <td>
-               <button class="btn btn-danger" ng-click="deleteCartItemById(item.userId, item.product.id)">Delete</button>
+               <button class="btn btn-danger" ng-click="deleteCartItem(item.product.id)">Delete</button>
             </td>
         </tr>
         <tr>

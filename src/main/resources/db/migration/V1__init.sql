@@ -5,6 +5,35 @@ create table products (
     created_at date,
     updated_at date);
 
+create table users (
+    id bigserial primary key,
+    username varchar(255) unique,
+    password varchar(255),
+    email varchar(255),
+    created_at date,
+    updated_at date
+);
+
+create table cart_items (
+    user_id bigserial,
+    product_id bigserial,
+    quantity int,
+    primary key (user_id, product_id)
+);
+
+create table roles (
+    id bigserial primary key,
+    name varchar(255),
+    created_at date,
+    updated_at date
+);
+
+create table users_roles (
+    user_id bigserial,
+    role_id bigserial,
+    primary key (user_id, role_id)
+);
+
 insert into products (title, price) values
     ('Apple', 10),
     ('Pear', 15),
@@ -16,17 +45,15 @@ insert into products (title, price) values
     ('Strawberry', 15),
     ('Raspberry', 20);
 
-create table users (
-    id bigserial primary key,
-    name varchar(255));
+insert into users (username, password) values
+    ('User1', '$2y$12$oru.fPCssUi0yjxsOPmNiOneFqXH4SnMJ9fb5m0pIttzTmZQIpVOK'),
+    ('User2', '$2y$12$pnQX7Zl41fTZ9m5EeJoxG.zzY/I8fFybpRc/IstLtMwVD7ek0r/Y.'),
+    ('User3', '$2y$12$6MsH3q14BiX6NW77Z.BPBu/WvKja1fZ76nu0JidK2ruXAKTlkb8qW');
 
-insert into users (name) values
-    ('User1'),
-    ('User2'),
-    ('User3');
+insert into roles (name) values
+    ('ROLE_USER'),
+    ('ROLE_ADMIN');
 
-create table cart_items (
-    user_id bigserial,
-    product_id bigserial,
-    quantity int,
-    primary key (user_id, product_id));
+insert into users_roles (user_id, role_id) values
+    (1, 1),
+    (2, 2);

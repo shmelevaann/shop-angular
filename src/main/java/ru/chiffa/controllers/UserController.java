@@ -1,21 +1,35 @@
 package ru.chiffa.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import ru.chiffa.model.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
+import ru.chiffa.DTO.JwtRequest;
+import ru.chiffa.DTO.JwtResponse;
+import ru.chiffa.exceptions.MarketException;
 import ru.chiffa.services.UserService;
+import ru.chiffa.utils.JwtTokenUtil;
 
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final AuthenticationManager authenticationManager;
 
-    @GetMapping("/login")
-    public User findByName(@RequestParam String name) {
-        return userService.findByName(name);
-    }
-}
+    @PostMapping("/auth")
+    public ResponseEntity<?> createAuthToken(@RequestBody JwtRequest authRequest) {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+        } catch (BadCredentialsException ex) {
+            return new ResponseEntity<>(new MarketException(HttpStatus.UNAUTHORIZED.value(), "Incorrect username or password"), HttpStatus.UNAUTHORIZED);
+        }
+        UserDetails userDetails = userService.loadUserByUsername(authRequest.getUsername());
+        String token = jwtTokenUtil.generateToken(userDetails);
+        return ResponseEntity.ok(new JwtResponse(token));
+    }}
