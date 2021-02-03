@@ -34,6 +34,20 @@ create table users_roles (
     primary key (user_id, role_id)
 );
 
+create table orders (
+    id bigserial primary key,
+    user_id bigserial,
+    date date
+);
+
+create table order_items (
+    order_id bigserial,
+    product_id bigserial,
+    quantity int,
+    price int,
+    primary key (order_id, product_id)
+);
+
 insert into products (title, price) values
     ('Apple', 10),
     ('Pear', 15),

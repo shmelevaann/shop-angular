@@ -84,6 +84,15 @@ angular.module('market', []).controller('productController', function ($scope, $
         })
     }
 
+    $scope.checkOut = function() {
+        $http({
+            url: contextPath + "/cart/checkout",
+            method: "POST"
+        }).then(function(){
+            $scope.findCart();
+        })
+    }
+
     $scope.deleteProductById = function(id) {
         $http({
             url: contextPath + "/products/" + id,

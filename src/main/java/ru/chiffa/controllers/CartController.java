@@ -37,4 +37,9 @@ public class CartController {
     public void clearCart(Principal principal) {
         cartService.clearCart(principal.getName());
     }
+
+    @PostMapping("/checkout")
+    public void checkOut(Principal principal) {
+        cartService.checkOut(principal.getName());
+    }
 }
