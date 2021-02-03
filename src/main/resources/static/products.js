@@ -38,18 +38,26 @@ angular.module('market', []).controller('productController', function ($scope, $
                 params: {id: $scope.user.id}
             })
             .then(function(response) {
-                $scope.cart = response.data
+                $scope.cart = response.data;
+                $scope.findCartTotal();
             })
         }
     }
 
-    $scope.addToCart = function(productId) {
+    $scope.findCartTotal = function() {
+        $scope.totalCartPrice = 0;
+        $scope.cart.forEach(item => {
+            $scope.totalCartPrice += item.product.price * item.quantity
+        })
+    }
+
+    $scope.updateCart = function(productId, quantity) {
         if($scope.login){
             $scope.cartItem = {};
             $scope.cartItem.product = {};
             $scope.cartItem.userId = $scope.user.id;
             $scope.cartItem.product.id = productId;
-            $scope.cartItem.quantity = 1;
+            $scope.cartItem.quantity = quantity;
             $http({
                 url: contextPath + "/cart",
                 method: "POST",
