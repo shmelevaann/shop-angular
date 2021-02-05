@@ -2,8 +2,8 @@ package ru.chiffa.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.chiffa.DTO.ProductDto;
-import ru.chiffa.DTO.ProductPageDto;
+import ru.chiffa.dto.ProductDto;
+import ru.chiffa.dto.ProductPageDto;
 import ru.chiffa.services.ProductService;
 
 @RestController

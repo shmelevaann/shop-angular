@@ -1,7 +1,7 @@
 package ru.chiffa.utils;
 
 import org.springframework.stereotype.Component;
-import ru.chiffa.DTO.ProductDto;
+import ru.chiffa.dto.ProductDto;
 import ru.chiffa.model.Product;
 
 @Component

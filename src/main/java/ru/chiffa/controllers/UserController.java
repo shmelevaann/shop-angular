@@ -8,9 +8,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import ru.chiffa.DTO.JwtRequest;
-import ru.chiffa.DTO.JwtResponse;
-import ru.chiffa.exceptions.MarketException;
+import ru.chiffa.dto.JwtRequest;
+import ru.chiffa.dto.JwtResponse;
+import ru.chiffa.exceptions.MarketError;
 import ru.chiffa.services.UserService;
 import ru.chiffa.utils.JwtTokenUtil;
 
@@ -27,7 +27,7 @@ public class UserController {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         } catch (BadCredentialsException ex) {
-            return new ResponseEntity<>(new MarketException(HttpStatus.UNAUTHORIZED.value(), "Incorrect username or password"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new MarketError(HttpStatus.UNAUTHORIZED.value(), "Incorrect username or password"), HttpStatus.UNAUTHORIZED);
         }
         UserDetails userDetails = userService.loadUserByUsername(authRequest.getUsername());
         String token = jwtTokenUtil.generateToken(userDetails);

@@ -1,4 +1,4 @@
-package ru.chiffa.DTO;
+package ru.chiffa.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

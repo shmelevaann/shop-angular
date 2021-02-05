@@ -13,6 +13,7 @@ import ru.chiffa.model.User;
 import ru.chiffa.reposirories.UserRepository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,7 @@ public class UserService implements UserDetailsService {
                 mapRolesToAuthorities(user.getRoles()));
     }
 
-    public Collection<? extends GrantedAuthority> mapRoleNamesToAuthorities(Collection<String> roles) {
+    public List<? extends GrantedAuthority> mapRoleNamesToAuthorities(Collection<String> roles) {
         return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 

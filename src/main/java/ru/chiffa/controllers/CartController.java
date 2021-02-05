@@ -2,8 +2,7 @@ package ru.chiffa.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.chiffa.DTO.CartItemDto;
-import ru.chiffa.model.CartItemIdentity;
+import ru.chiffa.dto.CartItemDto;
 import ru.chiffa.services.CartService;
 
 import java.security.Principal;

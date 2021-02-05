@@ -3,7 +3,7 @@ package ru.chiffa.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.chiffa.DTO.CartItemDto;
+import ru.chiffa.dto.CartItemDto;
 import ru.chiffa.model.OrderItem;
 import ru.chiffa.model.Product;
 import ru.chiffa.reposirories.UserRepository;
