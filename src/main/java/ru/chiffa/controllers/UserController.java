@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.chiffa.dto.JwtRequest;
 import ru.chiffa.dto.JwtResponse;
 import ru.chiffa.exceptions.MarketError;
+import ru.chiffa.services.CartService;
 import ru.chiffa.services.UserService;
 import ru.chiffa.utils.JwtTokenUtil;
 
@@ -21,6 +22,7 @@ public class UserController {
     private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
+    private final CartService cartService;
 
     @PostMapping("/auth")
     public ResponseEntity<?> createAuthToken(@RequestBody JwtRequest authRequest) {
@@ -31,5 +33,10 @@ public class UserController {
         }
         UserDetails userDetails = userService.loadUserByUsername(authRequest.getUsername());
         String token = jwtTokenUtil.generateToken(userDetails);
+
+        cartService.handleCarts(authRequest.getUsername());
+
         return ResponseEntity.ok(new JwtResponse(token));
-    }}
+    }
+
+}

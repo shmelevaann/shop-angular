@@ -44,5 +44,4 @@ public class UserService implements UserDetailsService {
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
         return mapRoleNamesToAuthorities(roles.stream().map(Role::getName).collect(Collectors.toList()));
     }
-
 }

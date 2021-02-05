@@ -4,14 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.chiffa.dto.CartItemDto;
-import ru.chiffa.model.OrderItem;
-import ru.chiffa.model.Product;
+import ru.chiffa.model.*;
+import ru.chiffa.reposirories.InMemoryCartRepository;
 import ru.chiffa.reposirories.UserRepository;
 import ru.chiffa.utils.CartItemDtoMapper;
-import ru.chiffa.model.CartItem;
-import ru.chiffa.model.CartItemIdentity;
 import ru.chiffa.reposirories.CartRepository;
 
+import javax.xml.catalog.Catalog;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +22,7 @@ public class CartService {
     private final CartItemDtoMapper cartItemDtoMapper;
     private final UserRepository userRepository;
     private final OrderService orderService;
+    private final InMemoryCartRepository inMemoryCartRepository;
 
     public List<CartItemDto> findByUsername(String username) {
         return cartRepository.findAllByUserUsername(username).stream().map(cartItemDtoMapper::cartItemToCartItemDto).collect(Collectors.toList());
@@ -65,13 +65,13 @@ public class CartService {
         List<CartItem> cart = cartRepository
                 .findAllByUserUsername(username);
 
-        if(cart.isEmpty()) {
+        if (cart.isEmpty()) {
             return;
         }
 
         orderService.handleOrder(cart.stream()
-                .map(this::cartItemToOrderItem)
-                .collect(Collectors.toList()),
+                        .map(this::cartItemToOrderItem)
+                        .collect(Collectors.toList()),
                 cart.stream().findFirst().get().getUser().getId());
         clearCart(username);
     }
@@ -82,5 +82,22 @@ public class CartService {
         orderItem.setQuantity(cartItem.getQuantity());
         orderItem.setPrice(cartItem.getProduct().getPrice());
         return orderItem;
+    }
+
+    public void handleCarts(String username) {
+        List<CartItem> inMemoryCart = inMemoryCartRepository.findAll();
+        if (!inMemoryCart.isEmpty()) {
+            consolidateCarts(inMemoryCart, username);
+        }
+    }
+
+    private void consolidateCarts(List<CartItem> inMemoryCart, String username) {
+        userRepository.findByUsername(username).ifPresent(
+                value -> {
+                    inMemoryCart
+                            .forEach(item -> item.setUser(value));
+                    cartRepository.saveAll(inMemoryCart);
+                    inMemoryCartRepository.deleteAll();
+                });
     }
 }
