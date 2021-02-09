@@ -1,7 +1,6 @@
-package ru.chiffa.DTO;
+package ru.chiffa.dto;
 
 import lombok.Data;
-import ru.chiffa.model.Product;
 
 import java.util.List;
 

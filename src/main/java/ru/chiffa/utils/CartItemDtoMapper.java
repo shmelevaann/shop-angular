@@ -1,7 +1,8 @@
-package ru.chiffa.DTO;
+package ru.chiffa.utils;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.chiffa.dto.CartItemDto;
 import ru.chiffa.model.CartItem;
 import ru.chiffa.model.User;
 
@@ -12,7 +13,10 @@ public class CartItemDtoMapper {
 
     public CartItemDto cartItemToCartItemDto(CartItem cartItem) {
         CartItemDto dto = new CartItemDto();
-        dto.setUserId(cartItem.getUser().getId());
+        User user = cartItem.getUser();
+        if(user != null) {
+            dto.setUserId(user.getId());
+        }
         dto.setProduct(productDtoMapper.productToProductDto(cartItem.getProduct()));
         dto.setQuantity(cartItem.getQuantity());
         return dto;

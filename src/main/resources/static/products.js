@@ -1,6 +1,6 @@
 angular.module('market', []).controller('productController', function ($scope, $http) {
     const contextPath = 'http://localhost:8189/market';
-    $scope.login = false;
+    $scope.loggedIn = false;
 
     $scope.findAllProducts = function() {
          $http({
@@ -18,30 +18,31 @@ angular.module('market', []).controller('productController', function ($scope, $
             })
     }
 
-    $scope.getUserId = function() {
+    $scope.tryToLogIn = function() {
         $http({
-            url: contextPath + "/user/login",
-            method: "GET",
-            params: {name: $scope.user.name}
+            url: contextPath + "/user/auth",
+            method: "POST",
+            data: {
+                username: $scope.user.name,
+                password: $scope.user.password
+            }
         }).then(function(response) {
-            $scope.user.id = response.data.id;
-            $scope.login = true;
+            $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
+            $scope.user.password = null;
+            $scope.loggedIn = true;
             $scope.findCart();
         })
     }
 
     $scope.findCart = function() {
-        if ($scope.login){
             $http({
                 url: contextPath + '/cart',
                 method: 'GET',
-                params: {id: $scope.user.id}
             })
             .then(function(response) {
                 $scope.cart = response.data;
                 $scope.findCartTotal();
             })
-        }
     }
 
     $scope.findCartTotal = function() {
@@ -52,28 +53,23 @@ angular.module('market', []).controller('productController', function ($scope, $
     }
 
     $scope.updateCart = function(productId, quantity) {
-        if($scope.login){
-            $scope.cartItem = {};
-            $scope.cartItem.product = {};
-            $scope.cartItem.userId = $scope.user.id;
-            $scope.cartItem.product.id = productId;
-            $scope.cartItem.quantity = quantity;
             $http({
                 url: contextPath + "/cart",
                 method: "POST",
-                data: $scope.cartItem
+                params: {
+                    product: productId,
+                    quantity: quantity
+                    }
             }). then (function() {
-                $scope.cartItem = null;
                 $scope.findCart();
             })
-        }
     }
 
-    $scope.deleteCartItemById = function(userId, productId) {
+    $scope.deleteCartItem = function(productId) {
         $http({
             url: contextPath + "/cart",
             method: "DELETE",
-            params: {userId: userId, productId: productId}
+            params: {productId: productId}
         }).then(function(){
             $scope.findCart();
         })
@@ -83,7 +79,15 @@ angular.module('market', []).controller('productController', function ($scope, $
         $http({
             url:contextPath + "/cart/all",
             method: "DELETE",
-            params: {userId: $scope.user.id}
+        }).then(function(){
+            $scope.findCart();
+        })
+    }
+
+    $scope.checkOut = function() {
+        $http({
+            url: contextPath + "/cart/checkout",
+            method: "POST"
         }).then(function(){
             $scope.findCart();
         })
@@ -109,18 +113,18 @@ angular.module('market', []).controller('productController', function ($scope, $
         $scope.findAllProducts();
     }
 
-    $scope.addNewProduct = function() {
-        $http({
-            url: contextPath + "/products/",
-            method: "POST",
-            data: $scope.newProduct
-        })
-        .then(function(){
-            $scope.newProduct = null;
-            $scope.findAllProducts();
-        });
-    }
+//    $scope.addNewProduct = function() {
+//        $http({
+//            url: contextPath + "/products/",
+//            method: "POST",
+//            data: $scope.newProduct
+//        })
+//        .then(function(){
+//            $scope.newProduct = null;
+//            $scope.findAllProducts();
+//        });
+//    }
 
     $scope.findAllProducts();
-    $scope.findCart();
+//    $scope.findCart();
 });

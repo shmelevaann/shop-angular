@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import ru.chiffa.DTO.ProductDto;
-import ru.chiffa.DTO.ProductDtoMapper;
+import ru.chiffa.dto.ProductDto;
+import ru.chiffa.utils.ProductDtoMapper;
 import ru.chiffa.model.Product;
-import ru.chiffa.DTO.ProductPageDto;
+import ru.chiffa.dto.ProductPageDto;
 import ru.chiffa.reposirories.ProductRepository;
 
 import java.util.stream.Collectors;

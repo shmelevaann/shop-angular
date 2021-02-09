@@ -5,11 +5,17 @@ import org.springframework.stereotype.Repository;
 import ru.chiffa.model.CartItem;
 import ru.chiffa.model.CartItemIdentity;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CartRepository extends JpaRepository<CartItem, CartItemIdentity> {
-    List<CartItem> findAllByUserId(Long id);
+    List<CartItem> findAllByUserUsername(String username);
 
-    void deleteByUserId(Long userId);
+    void deleteByUserUsername(String username);
+
+    void deleteByUserUsernameAndProductId(String username, Long product);
+
+    Optional<CartItem> findByUserUsernameAndProductId(String username, Long product);
 }
