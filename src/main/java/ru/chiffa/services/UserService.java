@@ -67,7 +67,9 @@ public class UserService implements UserDetailsService {
     }
 
     public List<AddressDto> findAddressesByUsername(String username) {
-        return findUserByUsername(username).getAddresses().stream().map(addressDtoMapper::addressToAddressDto).collect(Collectors.toList());
+        return findUserByUsername(username).getAddresses().stream()
+                .map(addressDtoMapper::addressToAddressDto)
+                .collect(Collectors.toList());
     }
 
     public User findUserByUsername(String username) {
@@ -78,6 +80,7 @@ public class UserService implements UserDetailsService {
     public void addAddress(String username, String addressValue) {
         Address address = new Address();
         address.setValue(addressValue);
-        findUserByUsername(username).addAddress(addressRepository.save(address));
+        address.setUser(findUserByUsername(username));
+        addressRepository.save(address);
     }
 }
