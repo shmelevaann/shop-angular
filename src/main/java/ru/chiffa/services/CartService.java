@@ -23,6 +23,7 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartItemDtoMapper cartItemDtoMapper;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final OrderService orderService;
     private final InMemoryCartRepository inMemoryCartRepository;
 
@@ -50,16 +51,12 @@ public class CartService {
 
     private void save(String username, Long product, Integer quantity) {
         CartItem cartItem = new CartItem();
-        Optional<User> user = userRepository.findByUsername(username);
-        if (user.isPresent()) {
-            cartItem.setUser(user.get());
-            cartItem.setProduct(new Product());
-            cartItem.getProduct().setId(product);
-            cartItem.setQuantity(quantity);
-            cartRepository.save(cartItem);
-        } else {
-            throw new ResourceNotFoundException("User not found");
-        }
+        cartItem.setUser(userService.findUserByUsername(username));
+        cartItem.setProduct(new Product());
+        cartItem.getProduct().setId(product);
+        cartItem.setQuantity(quantity);
+
+        cartRepository.save(cartItem);
     }
 
     @Transactional
@@ -74,7 +71,7 @@ public class CartService {
     }
 
     @Transactional
-    public void checkOut(String username) {
+    public void checkOut(String username, Long address) {
         List<CartItem> cart = cartRepository
                 .findAllByUserUsername(username);
 
@@ -82,10 +79,12 @@ public class CartService {
             return;
         }
 
-        orderService.handleOrder(cart.stream()
+        orderService.handleOrder(
+                cart.stream()
                         .map(this::cartItemToOrderItem)
                         .collect(Collectors.toList()),
-                cart.stream().findFirst().get().getUser().getId());
+                cart.stream().findFirst().get().getUser().getId(),
+                address);
         clearCart(username);
     }
 
@@ -105,12 +104,10 @@ public class CartService {
     }
 
     private void consolidateCarts(List<CartItem> inMemoryCart, String username) {
-        userRepository.findByUsername(username).ifPresent(
-                value -> {
-                    inMemoryCart
-                            .forEach(item -> item.setUser(value));
-                    cartRepository.saveAll(inMemoryCart);
-                    inMemoryCartRepository.deleteAll();
-                });
+        User user = userService.findUserByUsername(username);
+        inMemoryCart.forEach(item -> item.setUser(user));
+
+        cartRepository.saveAll(inMemoryCart);
+        inMemoryCartRepository.deleteAll();
     }
 }

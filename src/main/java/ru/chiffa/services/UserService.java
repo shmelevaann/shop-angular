@@ -10,8 +10,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.chiffa.exceptions.ConflictException;
+import ru.chiffa.exceptions.ResourceNotFoundException;
+import ru.chiffa.model.Address;
 import ru.chiffa.model.Role;
 import ru.chiffa.model.User;
+import ru.chiffa.reposirories.AddressRepository;
 import ru.chiffa.reposirories.UserRepository;
 
 import java.util.Collection;
@@ -24,16 +27,12 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
-
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
+    private final AddressRepository addressRepository;
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("User '%s' not found", username)));
+        User user = findUserByUsername(username);
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
@@ -41,11 +40,16 @@ public class UserService implements UserDetailsService {
     }
 
     public List<? extends GrantedAuthority> mapRoleNamesToAuthorities(Collection<String> roles) {
-        return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        return roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
-        return mapRoleNamesToAuthorities(roles.stream().map(Role::getName).collect(Collectors.toList()));
+        return mapRoleNamesToAuthorities(
+                roles.stream()
+                        .map(Role::getName)
+                        .collect(Collectors.toList()));
     }
 
     public User addNewUser(String username, String password) {
@@ -57,5 +61,20 @@ public class UserService implements UserDetailsService {
             user.setPassword(encoder.encode(password));
             return userRepository.save(user);
         }
+    }
+
+    public List<Address> findAddressesByUsername(String username) {
+        return findUserByUsername(username).getAddresses();
+    }
+
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("User '%s' not found", username)));
+    }
+
+    public void addAddress(String username, String addressValue) {
+        Address address = new Address();
+        address.setValue(addressValue);
+        findUserByUsername(username).addAddress(addressRepository.save(address));
     }
 }

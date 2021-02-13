@@ -54,11 +54,11 @@ create table addresses (
     value varchar(255)
 );
 
-create table users_addresses {
+create table users_addresses (
     user_id bigserial,
     address_id bigserial,
     primary key (user_id, address_id)
-}
+);
 
 insert into products (title, price) values
     ('Apple', 10),

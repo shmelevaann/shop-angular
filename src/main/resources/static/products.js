@@ -85,11 +85,11 @@ angular.module('market', []).controller('productController', function ($scope, $
         })
     }
 
-    $scope.checkOut = function() {
+    $scope.checkOut = function(addressId) {
         $http({
             url: contextPath + "/cart/checkout",
-            method: "POST"
-            params: {address: $scope.user.address}
+            method: "POST",
+            params: {address: addressId}
         }).then(function(){
             $scope.findCart();
             $scope.findOrders();

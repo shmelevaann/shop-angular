@@ -135,16 +135,27 @@
                                 <button class="btn btn-warning" ng-click="startCheckOut()" ng-show="loggedIn">Check out</button>
                             </td>
                         </tr>
-                        <tr ng-show="checkingOut">
-                            <form novalidate ng-submit="checkOut()">
-                                <h5>Choose address</h5>
-                                <select ng-repeat="address in user.addresses" ng-model="user.address">{{address}}</select>
-                                <form novalidate ng-submit="addAddress()">
-                                    <input class="" type="text" ng-model="user.newAddress" id="newAddress">
-                                    <button class="btn btn-default"  type="submit" >Add address</button>
-                                </form>
-                                <button class="btn btn-warning" type="submit" ng-disabled="user.addresses == null">Confirm</button>
-                            </form>
+                        <tr>
+                            <table ng-show="checkingOut">
+                                <tr>
+                                    <td>
+                                        <form novalidate ng-submit="addAddress()">
+                                            <input class="" type="text" ng-model="user.newAddress" id="newAddress">
+                                            <button class="btn btn-default"  type="submit" >Add address</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <form novalidate ng-submit="checkOut(address.id)">
+                                            <select ng-repeat="address in user.addresses">
+                                                <option>{{address.value}}</option>
+                                            </select>
+                                            <button class="btn btn-warning" type="submit" ng-disabled="user.addresses == null">Confirm</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </table>
                     </tbody>
                 </table>
             </td>

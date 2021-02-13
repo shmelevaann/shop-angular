@@ -13,6 +13,7 @@ import ru.chiffa.dto.JwtResponse;
 import ru.chiffa.dto.OrderDto;
 import ru.chiffa.dto.SignUpRequest;
 import ru.chiffa.exceptions.MarketError;
+import ru.chiffa.model.Address;
 import ru.chiffa.services.CartService;
 import ru.chiffa.services.OrderService;
 import ru.chiffa.services.UserService;
@@ -54,6 +55,16 @@ public class UserController {
     @PostMapping("/signup")
     public boolean singUp(@RequestBody SignUpRequest request) {
         return userService.addNewUser(request.getUsername(), request.getPassword()) != null;
+    }
+
+    @GetMapping ("/addresses")
+    public List<Address> findAddresses(Principal principal) {
+        return userService.findAddressesByUsername(principal.getName());
+    }
+
+    @PostMapping ("/addresses")
+    public void addAddress(@RequestParam String address, Principal principal) {
+        userService.addAddress(principal.getName(), address);
     }
 
 }
