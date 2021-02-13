@@ -13,4 +13,12 @@ public class ExceptionControllerAdvice {
                 new MarketError(HttpStatus.NOT_FOUND.value(), e.getMessage()),
                 HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handleConflictException(ConflictException e) {
+        return new ResponseEntity<>(
+                new MarketError(HttpStatus.CONFLICT.value(), e.getMessage()),
+                HttpStatus.CONFLICT
+        );
+    }
 }

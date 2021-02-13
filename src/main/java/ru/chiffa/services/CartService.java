@@ -1,16 +1,18 @@
 package ru.chiffa.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.chiffa.dto.CartItemDto;
+import ru.chiffa.exceptions.MarketError;
+import ru.chiffa.exceptions.ResourceNotFoundException;
 import ru.chiffa.model.*;
 import ru.chiffa.reposirories.InMemoryCartRepository;
 import ru.chiffa.reposirories.UserRepository;
 import ru.chiffa.utils.CartItemDtoMapper;
 import ru.chiffa.reposirories.CartRepository;
 
-import javax.xml.catalog.Catalog;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,23 +31,34 @@ public class CartService {
     }
 
     public void saveOrUpdate(String username, Long product, Integer quantity) {
-        CartItem cartItem;
         Optional<CartItem> existingItem = cartRepository.findByUserUsernameAndProductId(username, product);
         if (existingItem.isPresent()) {
-            cartItem = existingItem.get();
-            cartItem.setQuantity(cartItem.getQuantity() + quantity);
-        } else {
-            cartItem = new CartItem();
-            cartItem.setUser(userRepository.findByUsername(username).get());
-            cartItem.setProduct(new Product());
-            cartItem.getProduct().setId(product);
-            cartItem.setQuantity(quantity);
+            update(quantity, existingItem.get());
+        } else if (quantity > 0) {
+            save(username, product, quantity);
         }
+    }
 
+    private void update(Integer quantity, CartItem cartItem) {
+        cartItem.setQuantity(cartItem.getQuantity() + quantity);
         if (cartItem.getQuantity() <= 0) {
             cartRepository.deleteById(new CartItemIdentity(cartItem.getUser().getId(), cartItem.getProduct().getId()));
         } else {
             cartRepository.save(cartItem);
+        }
+    }
+
+    private void save(String username, Long product, Integer quantity) {
+        CartItem cartItem = new CartItem();
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isPresent()) {
+            cartItem.setUser(user.get());
+            cartItem.setProduct(new Product());
+            cartItem.getProduct().setId(product);
+            cartItem.setQuantity(quantity);
+            cartRepository.save(cartItem);
+        } else {
+            throw new ResourceNotFoundException("User not found");
         }
     }
 

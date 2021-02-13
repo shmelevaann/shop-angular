@@ -6,8 +6,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.chiffa.exceptions.ConflictException;
 import ru.chiffa.model.Role;
 import ru.chiffa.model.User;
 import ru.chiffa.reposirories.UserRepository;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder encoder;
 
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
@@ -43,5 +46,16 @@ public class UserService implements UserDetailsService {
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
         return mapRoleNamesToAuthorities(roles.stream().map(Role::getName).collect(Collectors.toList()));
+    }
+
+    public User addNewUser(String username, String password) {
+        if (userRepository.findByUsername(username).isPresent()) {
+            throw new ConflictException("Username already exists");
+        } else {
+            User user = new User();
+            user.setUsername(username);
+            user.setPassword(encoder.encode(password));
+            return userRepository.save(user);
+        }
     }
 }
