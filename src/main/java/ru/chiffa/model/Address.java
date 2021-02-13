@@ -15,4 +15,8 @@ public class Address {
 
     @Column(name = "value")
     private String value;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

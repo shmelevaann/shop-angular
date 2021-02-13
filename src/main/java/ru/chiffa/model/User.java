@@ -33,10 +33,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles;
 
-    @ManyToMany
-    @JoinTable(name = "users_addresses",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "address_id"))
+    @OneToMany (mappedBy = "user")
     private List<Address> addresses;
 
     @CreationTimestamp

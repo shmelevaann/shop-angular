@@ -168,6 +168,7 @@ angular.module('market', []).controller('productController', function ($scope, $
             params: {address: $scope.user.newAddress}
         }).then(function() {
             $scope.getAddresses();
+            $scope.user.newAddress = null;
         })
     }
 

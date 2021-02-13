@@ -8,10 +8,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import ru.chiffa.dto.JwtRequest;
-import ru.chiffa.dto.JwtResponse;
-import ru.chiffa.dto.OrderDto;
-import ru.chiffa.dto.SignUpRequest;
+import ru.chiffa.dto.*;
 import ru.chiffa.exceptions.MarketError;
 import ru.chiffa.model.Address;
 import ru.chiffa.services.CartService;
@@ -58,7 +55,7 @@ public class UserController {
     }
 
     @GetMapping ("/addresses")
-    public List<Address> findAddresses(Principal principal) {
+    public List<AddressDto> findAddresses(Principal principal) {
         return userService.findAddressesByUsername(principal.getName());
     }
 

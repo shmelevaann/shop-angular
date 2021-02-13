@@ -51,14 +51,10 @@ create table order_items (
 
 create table addresses (
     id bigserial primary key,
-    value varchar(255)
+    value varchar(255),
+    user_id bigserial
 );
 
-create table users_addresses (
-    user_id bigserial,
-    address_id bigserial,
-    primary key (user_id, address_id)
-);
 
 insert into products (title, price) values
     ('Apple', 10),

@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.chiffa.dto.AddressDto;
 import ru.chiffa.exceptions.ConflictException;
 import ru.chiffa.exceptions.ResourceNotFoundException;
 import ru.chiffa.model.Address;
@@ -16,6 +17,7 @@ import ru.chiffa.model.Role;
 import ru.chiffa.model.User;
 import ru.chiffa.reposirories.AddressRepository;
 import ru.chiffa.reposirories.UserRepository;
+import ru.chiffa.utils.AddressDtoMapper;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,6 +30,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
     private final AddressRepository addressRepository;
+    private final AddressDtoMapper addressDtoMapper;
 
     @Override
     @Transactional
@@ -63,8 +66,8 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public List<Address> findAddressesByUsername(String username) {
-        return findUserByUsername(username).getAddresses();
+    public List<AddressDto> findAddressesByUsername(String username) {
+        return findUserByUsername(username).getAddresses().stream().map(addressDtoMapper::addressToAddressDto).collect(Collectors.toList());
     }
 
     public User findUserByUsername(String username) {
