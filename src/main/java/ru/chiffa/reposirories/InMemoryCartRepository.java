@@ -16,7 +16,7 @@ import java.util.Optional;
 public class InMemoryCartRepository {
     private final List<CartItem> cartItems = new ArrayList<>();
 
-    public void save(CartItem cartItem) {
+    public void saveOrUpadate(CartItem cartItem) {
         Optional<CartItem> existingItem = cartItems.stream()
                 .filter(item -> item.getProduct().getId().equals(cartItem.getProduct().getId()))
                 .findFirst();
@@ -30,10 +30,7 @@ public class InMemoryCartRepository {
     }
 
     public void deleteById(Long productId) {
-        cartItems.stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst()
-                .ifPresent(cartItems::remove);
+        cartItems.removeIf(item -> item.getProduct().getId().equals(productId));
     }
 
     public void deleteAll() {

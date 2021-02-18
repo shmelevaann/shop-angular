@@ -1,6 +1,7 @@
 angular.module('market', []).controller('productController', function ($scope, $http) {
     const contextPath = 'http://localhost:8189/market';
     $scope.loggedIn = false;
+    $scope.checkingOut = false;
 
     $scope.findAllProducts = function() {
          $http({
@@ -84,12 +85,45 @@ angular.module('market', []).controller('productController', function ($scope, $
         })
     }
 
-    $scope.checkOut = function() {
+    $scope.checkOut = function(addressId) {
         $http({
             url: contextPath + "/cart/checkout",
-            method: "POST"
+            method: "POST",
+            params: {address: addressId}
         }).then(function(){
             $scope.findCart();
+            $scope.findOrders();
+            $scope.checkingOut = false;
+        })
+    }
+
+    $scope.findOrders = function() {
+        $http({
+            url: contextPath + "/user/orders",
+            method: "GET"
+        }).then(function(response) {
+            $scope.orders = response.data;
+            $scope.orders.forEach(item => $scope.countOrderTotal(item));
+        })
+    }
+
+    $scope.countOrderTotal = function(order) {
+        order.price = 0;
+        order.items.forEach(item => {
+            order.price += item.price * item.quantity;
+            });
+    }
+
+    $scope.signUp = function() {
+        $http({
+            url: contextPath + "/user/signup",
+            method: "POST",
+            data: {
+                username: $scope.user.name,
+                password: $scope.user.password
+            }
+        }).then(function(response){
+//
         })
     }
 
@@ -113,6 +147,31 @@ angular.module('market', []).controller('productController', function ($scope, $
         $scope.findAllProducts();
     }
 
+    $scope.startCheckOut = function() {
+        $scope.getAddresses();
+        $scope.checkingOut = true;
+    }
+
+    $scope.getAddresses = function() {
+        $http({
+            url: contextPath + "/user/addresses",
+            method: "GET"
+        }).then(function(response) {
+            $scope.user.addresses = response.data;
+        })
+    }
+
+    $scope.addAddress = function() {
+        $http({
+            url: contextPath + "/user/addresses",
+            method: "POST",
+            params: {address: $scope.user.newAddress}
+        }).then(function() {
+            $scope.getAddresses();
+            $scope.user.newAddress = null;
+        })
+    }
+
 //    $scope.addNewProduct = function() {
 //        $http({
 //            url: contextPath + "/products/",
@@ -126,5 +185,5 @@ angular.module('market', []).controller('productController', function ($scope, $
 //    }
 
     $scope.findAllProducts();
-//    $scope.findCart();
+    $scope.findCart();
 });

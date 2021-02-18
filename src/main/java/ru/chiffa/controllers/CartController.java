@@ -56,7 +56,7 @@ public class CartController {
     }
 
     @PostMapping("/checkout")
-    public void checkOut(Principal principal) {
-        cartService.checkOut(principal.getName());
+    public void checkOut(Principal principal, @RequestParam Long address) {
+        cartService.checkOut(principal.getName(), address);
     }
 }

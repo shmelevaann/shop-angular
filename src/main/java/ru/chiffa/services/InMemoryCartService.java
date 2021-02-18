@@ -6,7 +6,6 @@ import ru.chiffa.dto.CartItemDto;
 import ru.chiffa.exceptions.ResourceNotFoundException;
 import ru.chiffa.model.CartItem;
 import ru.chiffa.model.Product;
-import ru.chiffa.reposirories.CartRepository;
 import ru.chiffa.reposirories.InMemoryCartRepository;
 import ru.chiffa.reposirories.ProductRepository;
 import ru.chiffa.utils.CartItemDtoMapper;
@@ -30,7 +29,7 @@ public class InMemoryCartService {
         }
         cartItem.setProduct(product.get());
         cartItem.setQuantity(quantity);
-        inMemoryCartRepository.save(cartItem);
+        inMemoryCartRepository.saveOrUpadate(cartItem);
     }
 
     public List<CartItemDto> findAll() {

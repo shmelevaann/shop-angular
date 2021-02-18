@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity
@@ -30,7 +31,10 @@ public class User {
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Collection<Role> roles;
+    private List<Role> roles;
+
+    @OneToMany (mappedBy = "user")
+    private List<Address> addresses;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -39,4 +43,8 @@ public class User {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public void addAddress(Address address) {
+        addresses.add(address);
+    }
 }
