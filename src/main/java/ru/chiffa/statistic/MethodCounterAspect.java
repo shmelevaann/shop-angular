@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Aspect
-//@Component
+@Component
 public class MethodCounterAspect {
     private final Map<String, Integer> methodCounter = new ConcurrentHashMap<>();
 

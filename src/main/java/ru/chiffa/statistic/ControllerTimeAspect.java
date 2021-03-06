@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Aspect
-//@Component
+@Component
 public class ControllerTimeAspect {
     private final Map<String, Long> controllerTimeCounter = new ConcurrentHashMap<>();
 
