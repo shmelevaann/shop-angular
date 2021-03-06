@@ -3,6 +3,7 @@ angular.module('market', []).controller('productController', function ($scope, $
     $scope.loggedIn = false;
     $scope.checkingOut = false;
 
+/*
     $scope.findAllProducts = function() {
          $http({
                     url: contextPath + '/products',
@@ -18,7 +19,9 @@ angular.module('market', []).controller('productController', function ($scope, $
                 $scope.totalPages = response.data.totalPages;
             })
     }
+*/
 
+/*
     $scope.tryToLogIn = function() {
         $http({
             url: contextPath + "/user/auth",
@@ -34,7 +37,9 @@ angular.module('market', []).controller('productController', function ($scope, $
             $scope.findCart();
         })
     }
+*/
 
+/*
     $scope.findCart = function() {
             $http({
                 url: contextPath + '/cart',
@@ -45,6 +50,8 @@ angular.module('market', []).controller('productController', function ($scope, $
                 $scope.findCartTotal();
             })
     }
+*/
+/*
 
     $scope.findCartTotal = function() {
         $scope.totalCartPrice = 0;
@@ -52,7 +59,9 @@ angular.module('market', []).controller('productController', function ($scope, $
             $scope.totalCartPrice += item.product.price * item.quantity
         })
     }
+*/
 
+/*
     $scope.updateCart = function(productId, quantity) {
             $http({
                 url: contextPath + "/cart",
@@ -84,6 +93,8 @@ angular.module('market', []).controller('productController', function ($scope, $
             $scope.findCart();
         })
     }
+*/
+/*
 
     $scope.checkOut = function(addressId) {
         $http({
@@ -96,6 +107,8 @@ angular.module('market', []).controller('productController', function ($scope, $
             $scope.checkingOut = false;
         })
     }
+*/
+/*
 
     $scope.findOrders = function() {
         $http({
@@ -113,7 +126,9 @@ angular.module('market', []).controller('productController', function ($scope, $
             order.price += item.price * item.quantity;
             });
     }
+*/
 
+/*
     $scope.signUp = function() {
         $http({
             url: contextPath + "/user/signup",
@@ -126,6 +141,7 @@ angular.module('market', []).controller('productController', function ($scope, $
 //
         })
     }
+*/
 
     $scope.deleteProductById = function(id) {
         $http({
@@ -137,6 +153,7 @@ angular.module('market', []).controller('productController', function ($scope, $
             })
     }
 
+/*
     $scope.previousPage = function() {
         $scope.page--;
         $scope.findAllProducts();
@@ -146,12 +163,16 @@ angular.module('market', []).controller('productController', function ($scope, $
         $scope.page++;
         $scope.findAllProducts();
     }
+*/
 
+/*
     $scope.startCheckOut = function() {
         $scope.getAddresses();
         $scope.checkingOut = true;
     }
+*/
 
+/*
     $scope.getAddresses = function() {
         $http({
             url: contextPath + "/user/addresses",
@@ -171,6 +192,7 @@ angular.module('market', []).controller('productController', function ($scope, $
             $scope.user.newAddress = null;
         })
     }
+*/
 
 //    $scope.addNewProduct = function() {
 //        $http({

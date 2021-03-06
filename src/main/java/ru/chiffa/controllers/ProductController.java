@@ -7,7 +7,7 @@ import ru.chiffa.dto.ProductPageDto;
 import ru.chiffa.services.ProductService;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;

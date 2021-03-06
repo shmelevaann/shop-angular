@@ -1,0 +1,29 @@
+<h5>All Products</h5>
+<table class="table table-hover" cellpadding="0" cellspacing="0">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Price</td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="p in ProductsList">
+            <td>{{p.title}}</td>
+            <td>{{p.price}}</td>
+            <td>
+                <button class="btn btn-info" ng-click="updateCart(p.id, 1)">Add to Cart</button>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <div class="row">
+                    <button class="btn btn-default" ng-click="previousPage()" ng-disabled="page==0">&lt;</button>
+                    <span>{{page + 1}}</span>
+                    <button class="btn btn-default" ng-click="nextPage()" ng-disabled="page==totalPages-1">&gt;</button>
+                    <input class="" type="number" ng-model="size" id="size">
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
