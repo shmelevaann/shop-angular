@@ -29,8 +29,6 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
-    private final AddressRepository addressRepository;
-    private final AddressDtoMapper addressDtoMapper;
 
     @Override
     @Transactional
@@ -66,21 +64,9 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public List<AddressDto> findAddressesByUsername(String username) {
-        return findUserByUsername(username).getAddresses().stream()
-                .map(addressDtoMapper::addressToAddressDto)
-                .collect(Collectors.toList());
-    }
-
     public User findUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User '%s' not found", username)));
     }
 
-    public void addAddress(String username, String addressValue) {
-        Address address = new Address();
-        address.setValue(addressValue);
-        address.setUser(findUserByUsername(username));
-        addressRepository.save(address);
-    }
 }

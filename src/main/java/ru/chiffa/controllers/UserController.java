@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.chiffa.dto.*;
+import ru.chiffa.exceptions.ForbiddenException;
 import ru.chiffa.exceptions.MarketError;
 import ru.chiffa.model.Address;
 import ru.chiffa.services.CartService;
@@ -46,22 +47,20 @@ public class UserController {
 
     @GetMapping ("/orders")
     public List<OrderDto> findAllOrders(Principal principal) {
-        return orderService.findALl(principal.getName());
+        if (principal != null) {
+            return orderService.findALl(principal.getName());
+        } else {
+            throw new ForbiddenException("Customer should be logged in");
+        }
     }
 
     @PostMapping("/signup")
-    public boolean singUp(@RequestBody SignUpRequest request) {
-        return userService.addNewUser(request.getUsername(), request.getPassword()) != null;
-    }
-
-    @GetMapping ("/addresses")
-    public List<AddressDto> findAddresses(Principal principal) {
-        return userService.findAddressesByUsername(principal.getName());
-    }
-
-    @PostMapping ("/addresses")
-    public void addAddress(@RequestParam String address, Principal principal) {
-        userService.addAddress(principal.getName(), address);
+    public boolean singUp(@RequestBody SignUpRequest request, Principal principal) {
+        if (principal == null) {
+            return userService.addNewUser(request.getUsername(), request.getPassword()) != null;
+        } else {
+            throw new ForbiddenException("Customer should be logged out");
+        }
     }
 
 }

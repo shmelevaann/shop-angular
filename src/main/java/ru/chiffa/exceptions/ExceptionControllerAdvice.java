@@ -21,4 +21,12 @@ public class ExceptionControllerAdvice {
                 HttpStatus.CONFLICT
         );
     }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handleForbiddenException(ForbiddenException e) {
+        return new ResponseEntity<>(
+                new MarketError(HttpStatus.FORBIDDEN.value(), e.getMessage()),
+                HttpStatus.FORBIDDEN
+        );
+    }
 }
