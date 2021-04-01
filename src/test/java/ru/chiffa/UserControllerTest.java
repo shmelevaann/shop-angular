@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.chiffa.controllers.UserController;
@@ -23,19 +25,11 @@ public class UserControllerTest {
     private MockMvc mockMvc;
 
     @Test
+    @WithMockUser("User1")
     public void testFindAddresses() throws Exception {
-        Principal principal = new Principal() {
-            @Override
-            public String getName() {
-                return "User1";
-            }
-        };
-
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/user/addresses")
-                .contentType(MediaType.APPLICATION_JSON)
-                .principal(principal))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(3)));
-
+                .andExpect(jsonPath("$", hasSize(3)));
     }
  }
