@@ -3,7 +3,7 @@ angular.module('app').controller('orderConfirmationController', function ($scope
 
     $scope.getAddresses = function() {
         $http({
-            url: contextPath + "/api/v1/user/addresses",
+            url: contextPath + "/api/v1/addresses",
             method: "GET"
         }).then(function(response) {
             $scope.user.addresses = response.data;
@@ -12,7 +12,7 @@ angular.module('app').controller('orderConfirmationController', function ($scope
 
     $scope.addAddress = function() {
         $http({
-            url: contextPath + "/api/v1/user/addresses",
+            url: contextPath + "/api/v1/addresses",
             method: "POST",
             params: {address: $scope.user.newAddress}
         }).then(function() {
